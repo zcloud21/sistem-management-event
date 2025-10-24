@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Venue;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -12,7 +13,11 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Event::with(['user', 'venue'])
+            ->latest()
+            ->paginate(10);
+
+        return view('events.index', compact('events'));
     }
 
     /**
@@ -20,7 +25,8 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        $venues = Venue::orderBy('name')->get();
+        return view('events.create', compact('venues'));
     }
 
     /**
@@ -28,7 +34,17 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'event_name' => 'required|string|max:255',
+            'venue_id' => 'required|exists:venues,id',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'description' => 'nullable|string',
+        ]);
+
+        $request->user()->events()->create($validated);
+
+        return redirect()->route('events.index')->with('success', 'Event berhasil dibuat');
     }
 
     /**
@@ -36,7 +52,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        return redirect()->route('events.edit', $event->id);
     }
 
     /**
@@ -44,7 +60,8 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        $venues = Venue::orderBy('name')->get();
+        return view('events.edit', compact('event', 'venues'));
     }
 
     /**
@@ -52,7 +69,19 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        //
+        // Validasi
+        $validated = $request->validate([
+            'event_name' => 'required|string|max:255',
+            'venue_id' => 'nullable|exists:venues,id',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'description' => 'nullable|string',
+        ]);
+
+        // Update event
+        $event->update($validated);
+
+        return redirect()->route('events.index')->with('success', 'Event berhasil diperbarui.');
     }
 
     /**
@@ -60,6 +89,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+        return redirect()->route('events.index')->with('success', 'Event berhasil dihapus.');
     }
 }
