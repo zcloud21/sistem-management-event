@@ -36,7 +36,7 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'event_name' => 'required|string|max:255',
-            'venue_id' => 'required|exists:venues,id',
+            'venue_id' => 'nullable|exists:venues,id', // 'nullable' lebih baik (sesuai migrasi)
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'description' => 'nullable|string',
@@ -44,15 +44,18 @@ class EventController extends Controller
 
         $request->user()->events()->create($validated);
 
-        return redirect()->route('events.index')->with('success', 'Event berhasil dibuat');
+        return redirect()->route('events.index')->with('success', 'Event berhasil dibuat.');
     }
 
     /**
      * Display the specified resource.
+     * (Halaman detail event untuk menampilkan daftar tamu)
      */
     public function show(Event $event)
     {
-        return redirect()->route('events.edit', $event->id);
+        $event->load('guests.ticket');
+
+        return view('events.show', compact('event'));
     }
 
     /**
@@ -69,7 +72,6 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        // Validasi
         $validated = $request->validate([
             'event_name' => 'required|string|max:255',
             'venue_id' => 'nullable|exists:venues,id',
@@ -78,7 +80,6 @@ class EventController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        // Update event
         $event->update($validated);
 
         return redirect()->route('events.index')->with('success', 'Event berhasil diperbarui.');

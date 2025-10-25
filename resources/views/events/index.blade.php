@@ -27,7 +27,7 @@
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               @forelse ($events as $event)
               <tr>
-                <td class="px-6 py-4 whitespace-nowrap">{{ $event->event_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap"><a href="{{ route('events.show', $event->id) }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-200 font-medium">{{ $event->event_name }}</a></td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $event->venue->name ?? 'N/A' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $event->start_time }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $event->user->name }}</td>
