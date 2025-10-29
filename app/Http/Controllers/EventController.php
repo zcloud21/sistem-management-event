@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Vendor;
 use App\Models\Venue;
 use Illuminate\Http\Request;
 
@@ -53,9 +54,10 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load('guests.ticket');
+        $event->load('guests.ticket', 'vendors');
 
-        return view('events.show', compact('event'));
+        $all_vendors = Vendor::orderBy('name')->get();
+        return view('events.show', compact('event', 'all_vendors'));
     }
 
     /**
@@ -92,5 +94,30 @@ class EventController extends Controller
     {
         $event->delete();
         return redirect()->route('events.index')->with('success', 'Event berhasil dihapus.');
+    }
+
+    public function assignVendor(Request $request, Event $event)
+    {
+        $request->validate([
+            'vendor_id' => 'required|exists:vendors,id',
+            'agreed_price' => 'nullable|numeric|min:0',
+            'contract_details' => 'nullable|string',
+        ]);
+
+        $event->vendors()->attach($request->vendor_id, [
+            'agreed_price' => $request->agreed_price,
+            'contract_details' => $request->contract_details,
+            'status' => 'Negotiation',
+        ]);
+
+        return back()->with('success', 'Vendor berhasil ditugaskan ke event.');
+    }
+
+
+    public function detachVendor(Event $event, Vendor $vendor)
+    {
+        $event->vendors()->detach($vendor->id);
+
+        return back()->with('success', 'Vendor berhasil dihapus dari event.');
     }
 }

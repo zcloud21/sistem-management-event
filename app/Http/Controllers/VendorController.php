@@ -12,7 +12,8 @@ class VendorController extends Controller
      */
     public function index()
     {
-        //
+        $vendors = Vendor::latest()->paginate(10);
+        return view('vendors.index', compact('vendors'));
     }
 
     /**
@@ -20,7 +21,7 @@ class VendorController extends Controller
      */
     public function create()
     {
-        //
+        return view('vendors.create');
     }
 
     /**
@@ -28,7 +29,17 @@ class VendorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:20',
+            'address' => 'nullable|string',
+        ]);
+
+        Vendor::create($validated);
+
+        return redirect()->route('vendors.index')->with('success', 'Vendor berhasil ditambahkan.');
     }
 
     /**
@@ -36,7 +47,7 @@ class VendorController extends Controller
      */
     public function show(Vendor $vendor)
     {
-        //
+        return redirect()->route('vendors.edit', $vendor->id);
     }
 
     /**
@@ -44,7 +55,7 @@ class VendorController extends Controller
      */
     public function edit(Vendor $vendor)
     {
-        //
+        return view('vendors.edit', compact('vendor'));
     }
 
     /**
@@ -52,7 +63,17 @@ class VendorController extends Controller
      */
     public function update(Request $request, Vendor $vendor)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:20',
+            'address' => 'nullable|string',
+        ]);
+
+        $vendor->update($validated);
+
+        return redirect()->route('vendors.index')->with('success', 'Vendor berhasil diperbarui.');
     }
 
     /**
@@ -60,6 +81,7 @@ class VendorController extends Controller
      */
     public function destroy(Vendor $vendor)
     {
-        //
+        $vendor->delete();
+        return redirect()->route('vendors.index')->with('success', 'Vendor berhasil dihapus.');
     }
 }

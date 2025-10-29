@@ -4,6 +4,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(function () {
         ->name('events.guests.update');
     Route::post('events/{event}/guests/import', [GuestController::class, 'import'])->name('events.guests.import');
     Route::resource('events.guests', GuestController::class)->except(['index']);
+    Route::post('events/{event}/assign-vendor', [EventController::class, 'assignVendor'])->name('events.assignVendor');
+    Route::delete('/events/{event}/vendors/{vendor}', [EventController::class, 'detachVendor'])
+        ->name('events.detachVendor');
+    Route::resource('vendors', VendorController::class);
 });
 Route::get('tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
 
