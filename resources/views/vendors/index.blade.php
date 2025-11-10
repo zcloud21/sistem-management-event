@@ -32,15 +32,30 @@
                 <td class="px-6 py-4">{{ $vendor->contact_person }}</td>
                 <td class="px-6 py-4">{{ $vendor->phone_number }}</td>
                 <td class="px-6 py-4 text-right">
-                  <x-secondary-button tag="a" :href="route('vendors.edit', $vendor->id)">
+                  <!-- Edit button (now a direct link) -->
+                  <a href="{{ route('vendors.edit', $vendor->id) }}"
+                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">
                     Edit
-                  </x-secondary-button>
-                  <form action="{{ route('vendors.destroy', $vendor->id) }}" method="POST" class="inline-block">
+                  </a>
+
+                  {{-- Tombol Hapus dengan konfirmasi modal global --}}
+                  <button
+                    type="button"
+                    @click="window.dispatchEvent(new CustomEvent('open-confirmation-data', {
+                        detail: {
+                            formId: 'delete-form-vendor-{{ $vendor->id }}',
+                            title: 'Konfirmasi Hapus Vendor',
+                            message: 'Apakah Anda yakin ingin menghapus vendor {{ $vendor->name }}? Tindakan ini tidak dapat dibatalkan.'
+                        }
+                    }))"
+                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block ml-2">
+                    Delete
+                  </button>
+
+                  {{-- Form tersembunyi untuk aksi hapus --}}
+                  <form id="delete-form-vendor-{{ $vendor->id }}" action="{{ route('vendors.destroy', $vendor->id) }}" method="POST" class="hidden">
                     @csrf
                     @method('DELETE')
-                    <x-danger-button type="submit" onclick="return confirm('Yakin ingin menghapus vendor ini?')">
-                      Delete
-                    </x-danger-button>
                   </form>
                 </td>
               </tr>

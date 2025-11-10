@@ -22,7 +22,7 @@
           </div>
           @endif
 
-          <form action="{{ route('vouchers.update', $voucher->id) }}" method="POST">
+          <form id="update-voucher-form-{{ $voucher->id }}" action="{{ route('vouchers.update', $voucher->id) }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembaruan Voucher" data-confirmation-message="Apakah Anda yakin ingin menyimpan perubahan pada voucher '{{ $voucher->code }}'?">
             @csrf
             @method('PUT') {{-- Method PUT untuk update --}}
 

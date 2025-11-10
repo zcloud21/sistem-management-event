@@ -56,12 +56,46 @@
                                     {{ $role->users->count() }} users
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('superuser.roles.edit', $role) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                    {{-- Edit button with modal confirmation --}}
+                                    <button
+                                      @click="document.dispatchEvent(new CustomEvent('show-alert-edit-role-{{ $role->id }}'))"
+                                      class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                    >
+                                      Edit
+                                    </button>
+
+                                    {{-- Modal Konfirmasi Edit --}}
+                                    <x-alert-modal
+                                        id="edit-role-{{ $role->id }}"
+                                        title="Edit Role"
+                                        message="Apakah anda yakin ingin mengedit role {{ $role->name }}?"
+                                        type="warning"
+                                        action="window.location='{{ route('superuser.roles.edit', $role) }}'"
+                                        cancel=""
+                                    />
                                     @if($role->name !== 'SuperUser' && $role->users->count() === 0)
-                                        <form action="{{ route('superuser.roles.destroy', $role) }}" method="POST" class="inline">
+                                        {{-- Tombol Hapus dengan konfirmasi modal --}}
+                                        <button 
+                                          @click="document.dispatchEvent(new CustomEvent('show-alert-delete-role-{{ $role->id }}'))"
+                                          class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block"
+                                        >
+                                          Delete
+                                        </button>
+
+                                        {{-- Modal Konfirmasi Hapus --}}
+                                        <x-alert-modal 
+                                            id="delete-role-{{ $role->id }}" 
+                                            title="Delete Role" 
+                                            message="Are you sure you want to delete role {{ $role->name }}? This action cannot be undone." 
+                                            type="danger"
+                                            action="document.getElementById('delete-form-role-{{ $role->id }}').submit()"
+                                            cancel=""
+                                        />
+
+                                        {{-- Form tersembunyi untuk aksi hapus --}}
+                                        <form id="delete-form-role-{{ $role->id }}" action="{{ route('superuser.roles.destroy', $role) }}" method="POST" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
                                         </form>
                                     @elseif($role->name === 'SuperUser')
                                         <span class="text-gray-400">Cannot delete</span>

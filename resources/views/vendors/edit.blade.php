@@ -14,7 +14,7 @@
           {{-- ... (error handling) ... --}}
           @endif
 
-          <form action="{{ route('vendors.update', $vendor->id) }}" method="POST">
+          <form id="update-vendor-form-{{ $vendor->id }}" action="{{ route('vendors.update', $vendor->id) }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembaruan Vendor" data-confirmation-message="Apakah Anda yakin ingin menyimpan perubahan pada vendor '{{ $vendor->name }}'?">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

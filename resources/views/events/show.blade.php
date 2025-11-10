@@ -82,17 +82,46 @@
                       Tiket Error
                     </x-secondary-button>
                     @endif
-                    {{-- Edit Guest --}}
-                    <x-secondary-button tag="a" :href="route('events.guests.edit', [$event, $guest])" class="ml-2">
+                    {{-- Edit button with modal confirmation --}}
+                    <button
+                      @click="document.dispatchEvent(new CustomEvent('show-alert-edit-guest-{{ $guest->id }}'))"
+                      class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150 ml-2"
+                    >
                       Edit
-                    </x-secondary-button>
+                    </button>
+
+                    {{-- Modal Konfirmasi Edit Guest --}}
+                    <x-alert-modal
+                        id="edit-guest-{{ $guest->id }}"
+                        title="Edit Guest"
+                        message="Apakah anda yakin ingin mengedit tamu {{ $guest->name }}?"
+                        type="warning"
+                        action="window.location='{{ route('events.guests.edit', [$event, $guest]) }}'"
+                        cancel=""
+                    />
+
                     {{-- Hapus Guest --}}
-                    <form action="{{ route('events.guests.destroy', [$event, $guest]) }}" method="POST" class="inline-block ml-2">
+                    <button 
+                      @click="document.dispatchEvent(new CustomEvent('show-alert-delete-guest-{{ $guest->id }}'))"
+                      class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block ml-2"
+                    >
+                      Hapus
+                    </button>
+
+                    {{-- Modal Konfirmasi Hapus Guest --}}
+                    <x-alert-modal 
+                        id="delete-guest-{{ $guest->id }}" 
+                        title="Delete Guest" 
+                        message="Yakin hapus tamu {{ $guest->name }}? This action cannot be undone." 
+                        type="danger"
+                        action="document.getElementById('delete-form-guest-{{ $guest->id }}').submit()"
+                        cancel=""
+                    />
+
+                    {{-- Form tersembunyi untuk aksi hapus guest --}}
+                    <form id="delete-form-guest-{{ $guest->id }}" action="{{ route('events.guests.destroy', [$event, $guest]) }}" method="POST" class="hidden">
                       @csrf
                       @method('DELETE')
-                      <x-danger-button type="submit" onclick="return confirm('Yakin hapus tamu ini?')">
-                        Hapus
-                      </x-danger-button>
                     </form>
                   </td>
                 </tr>
@@ -130,12 +159,33 @@
                   <td class="px-6 py-4">Rp {{ number_format($vendor->pivot->agreed_price, 0, ',', '.') }}</td>
                   <td class="px-6 py-4">{{ $vendor->pivot->status }}</td>
                   <td class="px-6 py-4 text-right">
-                    <form action="{{ route('events.detachVendor', [$event, $vendor]) }}" method="POST">
+                    {{-- Tombol Edit Vendor --}}
+                    <x-secondary-button tag="a" :href="route('vendors.edit', $vendor)" class="mr-2">
+                      Edit
+                    </x-secondary-button>
+
+                    {{-- Tombol Lepas Vendor dengan konfirmasi modal --}}
+                    <button 
+                      @click="document.dispatchEvent(new CustomEvent('show-alert-detach-vendor-{{ $vendor->id }}'))"
+                      class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block"
+                    >
+                      Lepas
+                    </button>
+
+                    {{-- Modal Konfirmasi Lepas Vendor --}}
+                    <x-alert-modal 
+                        id="detach-vendor-{{ $vendor->id }}" 
+                        title="Detach Vendor" 
+                        message="Yakin lepas vendor {{ $vendor->name }} dari event ini? This action cannot be undone." 
+                        type="danger"
+                        action="document.getElementById('detach-form-vendor-{{ $vendor->id }}').submit()"
+                        cancel=""
+                    />
+
+                    {{-- Form tersembunyi untuk aksi lepas vendor --}}
+                    <form id="detach-form-vendor-{{ $vendor->id }}" action="{{ route('events.detachVendor', [$event, $vendor]) }}" method="POST" class="hidden">
                       @csrf
                       @method('DELETE')
-                      <x-danger-button type="submit" onclick="return confirm('Yakin lepas vendor ini?')">
-                        Lepas
-                      </x-danger-button>
                     </form>
                   </td>
                 </tr>

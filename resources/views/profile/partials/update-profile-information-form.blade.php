@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form id="update-profile-info-form" method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6 needs-confirmation" data-confirmation-title="Konfirmasi Pembaruan Profil" data-confirmation-message="Apakah Anda yakin ingin menyimpan perubahan pada informasi profil Anda?">
         @csrf
         @method('patch')
 

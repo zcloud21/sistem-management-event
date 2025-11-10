@@ -20,7 +20,7 @@
           </div>
           @endif
 
-          <form action="{{ route('vendors.store') }}" method="POST">
+          <form id="create-vendor-form" action="{{ route('vendors.store') }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembuatan Vendor" data-confirmation-message="Apakah Anda yakin ingin membuat vendor baru ini?">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="mb-4">

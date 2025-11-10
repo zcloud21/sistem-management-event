@@ -37,6 +37,15 @@ class InvoicePolicy
     }
 
     /**
+     * Determine whether the user can invalidate a voucher on the invoice.
+     */
+    public function invalidateVoucher(User $user, Invoice $invoice): bool
+    {
+        // Only SuperUser or users with specific permission can invalidate vouchers
+        return $user->hasRole('SuperUser') || $user->can('invalidate_vouchers');
+    }
+
+    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool

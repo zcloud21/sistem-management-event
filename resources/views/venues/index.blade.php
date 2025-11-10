@@ -31,15 +31,24 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ $venue->capacity }} orang</td>
                 <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($venue->price, 0, ',', '.') }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <x-secondary-button tag="a" :href="route('venues.edit', $venue->id)">
+                  <!-- Edit button (now a direct link) -->
+                  <a href="{{ route('venues.edit', $venue->id) }}"
+                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">
                     Edit
-                  </x-secondary-button>
-                  <form action="{{ route('venues.destroy', $venue->id) }}" method="POST" class="inline-block">
+                  </a>
+
+                  <!-- Delete button with global modal confirmation -->
+                  <button
+                    type="button"
+                    onclick="dispatchConfirmation('delete-form-{{ $venue->id }}', 'Konfirmasi Hapus Venue', 'Apakah Anda yakin ingin menghapus venue {{ $venue->name }}? Tindakan ini tidak dapat dibatalkan.')"
+                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block ml-2">
+                    Delete
+                  </button>
+
+                  <!-- Hidden form for delete action -->
+                  <form id="delete-form-{{ $venue->id }}" action="{{ route('venues.destroy', $venue->id) }}" method="POST" class="hidden">
                     @csrf
                     @method('DELETE')
-                    <x-danger-button type="submit" onclick="return confirm('Yakin ingin menghapus venue ini?')">
-                      Delete
-                    </x-danger-button>
                   </form>
                 </td>
               </tr>

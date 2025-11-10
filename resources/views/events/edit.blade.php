@@ -21,7 +21,7 @@
           </div>
           @endif
 
-          <form action="{{ route('events.update', $event->id) }}" method="POST">
+          <form id="update-event-form-{{ $event->id }}" action="{{ route('events.update', $event->id) }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembaruan Event" data-confirmation-message="Apakah Anda yakin ingin menyimpan perubahan pada event '{{ $event->event_name }}'?">
             @csrf
             @method('PUT')
 

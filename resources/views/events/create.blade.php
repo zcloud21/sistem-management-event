@@ -22,7 +22,7 @@
           </div>
           @endif
 
-          <form action="{{ route('events.store') }}" method="POST">
+          <form id="create-event-form" action="{{ route('events.store') }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembuatan Event" data-confirmation-message="Apakah Anda yakin ingin membuat event baru ini?">
             @csrf
             <div class="mb-4">
               <x-input-label for="event_name" :value="__('Nama Event')" />

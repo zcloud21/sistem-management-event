@@ -20,8 +20,18 @@ class Invoice extends Model
         'total_amount',
         'status',
         'voucher_id',
-        'discount_amount',
+        'voucher_discount_amount', // Renamed from discount_amount
+        'voucher_invalidation_reason',
+        'voucher_invalidated_at',
+        'original_total_before_voucher',
     ];
+
+    protected $casts = [
+        'voucher_invalidated_at' => 'datetime',
+        'issue_date' => 'date', // Assuming these should also be cast
+        'due_date' => 'date',   // Assuming these should also be cast
+    ];
+
     /**
      * Relasi: Invoice ini milik Event mana
      */
@@ -38,7 +48,7 @@ class Invoice extends Model
         return $this->hasMany(Payment::class);
     }
 
-    protected function voucher(): BelongsTo
+    public function voucher(): BelongsTo
     {
         return $this->belongsTo(Voucher::class);
     }
@@ -59,7 +69,7 @@ class Invoice extends Model
     protected function finalAmount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->total_amount - $this->discount_amount
+            get: fn() => $this->total_amount - $this->voucher_discount_amount
         );
     }
 

@@ -22,7 +22,7 @@
           </div>
           @endif
 
-          <form action="{{ route('vouchers.store') }}" method="POST">
+          <form id="create-voucher-form" action="{{ route('vouchers.store') }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembuatan Voucher" data-confirmation-message="Apakah Anda yakin ingin membuat voucher baru ini?">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               {{-- Kode Voucher --}}

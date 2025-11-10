@@ -22,7 +22,7 @@
           </div>
           @endif
 
-          <form action="{{ route('venues.update', $venue->id) }}" method="POST">
+          <form id="update-venue-form-{{ $venue->id }}" action="{{ route('venues.update', $venue->id) }}" method="POST" class="needs-confirmation" data-confirmation-title="Konfirmasi Pembaruan Venue" data-confirmation-message="Apakah Anda yakin ingin menyimpan perubahan pada venue '{{ $venue->name }}'?">
             @csrf
             @method('PUT') {{-- PENTING: Method untuk update adalah PUT/PATCH --}}
 

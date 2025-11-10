@@ -3,7 +3,7 @@
 @props(['tag' => 'button', 'type' => 'submit'])
 
 @php
-$classes = 'inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150';
+$classes = 'inline-flex items-center px-4 py-2 bg-[#E8C4A0] dark:bg-[#7A6B60] border border-[#E8C4A0] dark:border-[#E8A876] rounded-md font-semibold text-xs text-[#3D2817] dark:text-[#F5F1ED] uppercase tracking-widest shadow-sm hover:bg-[#D9B191] dark:hover:bg-[#63574D] focus:outline-none focus:ring-2 focus:ring-[#C17A4A] dark:focus:ring-[#E8A876] focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150';
 @endphp
 
 @if ($tag == 'a')

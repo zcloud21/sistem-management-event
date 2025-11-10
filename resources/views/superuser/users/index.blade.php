@@ -54,12 +54,46 @@
                                     {{ $user->created_at->format('M d, Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('superuser.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                    {{-- Edit button with modal confirmation --}}
+                                    <button
+                                      @click="document.dispatchEvent(new CustomEvent('show-alert-edit-user-{{ $user->id }}'))"
+                                      class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                    >
+                                      Edit
+                                    </button>
+
+                                    {{-- Modal Konfirmasi Edit --}}
+                                    <x-alert-modal
+                                        id="edit-user-{{ $user->id }}"
+                                        title="Edit User"
+                                        message="Apakah anda yakin ingin mengedit user {{ $user->name }}?"
+                                        type="warning"
+                                        action="window.location='{{ route('superuser.users.edit', $user) }}'"
+                                        cancel=""
+                                    />
                                     @if(!$user->hasRole('SuperUser') || $user->id !== auth()->id())
-                                        <form action="{{ route('superuser.users.destroy', $user) }}" method="POST" class="inline">
+                                        {{-- Tombol Hapus dengan konfirmasi modal --}}
+                                        <button 
+                                          @click="document.dispatchEvent(new CustomEvent('show-alert-delete-user-{{ $user->id }}'))"
+                                          class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block"
+                                        >
+                                          Delete
+                                        </button>
+
+                                        {{-- Modal Konfirmasi Hapus --}}
+                                        <x-alert-modal 
+                                            id="delete-user-{{ $user->id }}" 
+                                            title="Delete User" 
+                                            message="Are you sure you want to delete user {{ $user->name }}? This action cannot be undone." 
+                                            type="danger"
+                                            action="document.getElementById('delete-form-user-{{ $user->id }}').submit()"
+                                            cancel=""
+                                        />
+
+                                        {{-- Form tersembunyi untuk aksi hapus --}}
+                                        <form id="delete-form-user-{{ $user->id }}" action="{{ route('superuser.users.destroy', $user) }}" method="POST" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                         </form>
                                     @endif
                                 </td>
