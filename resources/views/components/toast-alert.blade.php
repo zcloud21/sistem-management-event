@@ -2,11 +2,11 @@
 
 @php
     $typeClasses = match($type) {
-        'danger' => 'bg-[#8F522F] dark:bg-[#AF4412] text-white',
-        'warning' => 'bg-[#E8A876] dark:bg-[#D98F5D] text-[#3D2817] dark:text-[#F5F1ED]',
-        'success' => 'bg-[#C17A4A] dark:bg-[#E8A876] text-white',
-        'info' => 'bg-[#E8C4A0] dark:bg-[#7A6B60] text-[#3D2817] dark:text-[#F5F1ED]',
-        default => 'bg-[#C17A4A] dark:bg-[#E8A876] text-white',
+        'danger' => 'bg-red-500 text-white',
+        'warning' => 'bg-yellow-500 text-white',
+        'success' => 'bg-accent-green text-white',
+        'info' => 'bg-primary text-white',
+        default => 'bg-primary text-white',
     };
     
     $icon = match($type) {
@@ -40,7 +40,7 @@
     class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:pt-24 sm:items-start sm:justify-end z-50"
     style="display: none;"
 >
-    <div class="max-w-sm w-full bg-[#F2DFD3] dark:bg-[#2B2420] shadow-lg rounded-lg pointer-events-auto border border-[#E0D0C0] dark:border-[#4A4038]">
+    <div class="max-w-sm w-full bg-surface-light shadow-lg rounded-lg pointer-events-auto border border-gray-200">
         <div class="rounded-lg shadow-xs overflow-hidden" :class="'{{ $typeClasses }}'">
             <div class="p-4">
                 <div class="flex items-start">
@@ -51,7 +51,7 @@
                         <p class="text-sm font-medium" x-text="message"></p>
                     </div>
                     <div class="ml-4 flex-shrink-0 flex">
-                        <button @click="show = false" class="inline-flex text-white hover:text-[#E8A876] focus:outline-none">
+                        <button @click="show = false" class="inline-flex text-white hover:text-gray-300 focus:outline-none">
                             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                             </svg>

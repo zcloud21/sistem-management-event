@@ -18,6 +18,7 @@
             <thead>
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Nama Event</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Klien</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Venue</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Waktu Mulai</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Pembuat</th>
@@ -28,6 +29,7 @@
               @forelse ($events as $event)
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap"><a href="{{ route('events.show', $event->id) }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-200 font-medium">{{ $event->event_name }}</a></td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ $event->client_name ?? 'N/A' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $event->venue->name ?? 'N/A' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $event->start_time }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $event->user->name }}</td>
@@ -62,7 +64,7 @@
               </tr>
               @empty
               <tr>
-                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center">Belum ada data event.</td>
+                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center">Belum ada data event.</td>
               </tr>
               @endforelse
             </tbody>

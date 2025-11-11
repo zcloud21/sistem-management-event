@@ -35,9 +35,12 @@ class DashboardController extends Controller
             
             return view('superuser.dashboard', compact('usersCount', 'eventsCount', 'venuesCount', 'vendorsCount', 'recentUsers', 'systemInfo'));
         } catch (\Exception $e) {
-            Log::error('Error in SuperUser Dashboard: ' . $e->getMessage());
+            \Log::error('Error in SuperUser Dashboard', [
+                'error' => \get_class($e)
+            ]);
             // Return a simple error page for debugging
-            return response()->view('errors.500', ['exception' => $e], 500);
+            return response()->view('errors.500', [], 500);
+        }
         }
     }
 }

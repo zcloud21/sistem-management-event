@@ -24,8 +24,10 @@ class LoginRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        // Don't force lowercase on identity to preserve username case
+        // Only lowercase when checking for email format
         $this->merge([
-            'identity' => strtolower($this->input('identity')),
+            'identity' => $this->input('identity'),
         ]);
     }
 
@@ -55,16 +57,29 @@ class LoginRequest extends FormRequest
         $password = $this->input('password');
         $remember = $this->boolean('remember');
 
-        $field = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        // First, find user by either email or username
+        $user = \App\Models\User::where('email', $identity)
+                   ->orWhere('username', $identity)
+                   ->first();
+
+        if (!$user) {
+            // User not found, trigger rate limiter and throw error
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'identity' => trans('auth.failed'),
+            ]);
+        }
+
+        // Determine the login field based on which one matched
+        $loginField = $user->email === $identity ? 'email' : 'username';
 
         $credentials = [
-            $field => $identity,
+            $loginField => $identity,
             'password' => $password,
         ];
 
         if (! Auth::attempt($credentials, $remember)) {
             RateLimiter::hit($this->throttleKey());
-
             throw ValidationException::withMessages([
                 'identity' => trans('auth.failed'),
             ]);

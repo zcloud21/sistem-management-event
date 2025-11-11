@@ -53,7 +53,7 @@
 
     <div class="qr-code">
       {{-- Tampilkan SVG QR Code --}}
-      {!! $qrCode !!}
+      <div>{!! $qrCode !!}</div>
     </div>
 
     <p>Tunjukkan QR Code ini kepada staf di pintu masuk.</p>

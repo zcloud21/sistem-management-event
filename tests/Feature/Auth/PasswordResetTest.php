@@ -29,7 +29,6 @@ class PasswordResetTest extends TestCase
 
         Notification::assertSentTo($user, ResetPassword::class);
     }
-
     public function test_reset_password_screen_can_be_rendered(): void
     {
         Notification::fake();

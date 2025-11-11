@@ -1,37 +1,43 @@
 <x-app-layout>
   <x-slot name="header">
     <div class="flex justify-between items-center">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Invoice: {{ $invoice->invoice_number }}
-        </h2>
+      <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        Invoice: {{ $invoice->invoice_number }}
+      </h2>
 
-        <x-dropdown align="right" width="48">
-            <x-slot name="trigger">
-                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                    <div>Export</div>
-
-                    <div class="ms-1">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </button>
-            </x-slot>
-
-            <x-slot name="content">
-                <x-dropdown-link :href="route('invoices.export', ['invoice' => $invoice, 'format' => 'pdf'])">
-                    {{ __('Export to PDF') }}
-                </x-dropdown-link>
-                <x-dropdown-link :href="route('invoices.export', ['invoice' => $invoice, 'format' => 'xls'])">
-                    {{ __('Export to XLS') }}
-                </x-dropdown-link>
-                <x-dropdown-link :href="route('invoices.export', ['invoice' => $invoice, 'format' => 'docx'])">
-                    {{ __('Export to Word') }}
-                </x-dropdown-link>
-            </x-slot>
-        </x-dropdown>
+      <div class="flex space-x-2">
+        <a href="{{ route('invoices.preview', $invoice) }}" target="_blank"
+          class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+          Preview
+        </a>
+        <a href="{{ route('invoices.export', ['invoice' => $invoice, 'format' => 'pdf']) }}"
+          class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          PDF
+        </a>
+        <a href="{{ route('invoices.export', ['invoice' => $invoice, 'format' => 'xls']) }}"
+          class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          XLS
+        </a>
+        <a href="{{ route('invoices.export', ['invoice' => $invoice, 'format' => 'docx']) }}"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          DOCX
+        </a>
+      </div>
     </div>
-</x-slot>
+  </x-slot>
 
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
@@ -60,6 +66,8 @@
           </div>
           <hr class="my-4 dark:border-gray-700">
           <p><strong>Event:</strong> {{ $invoice->event->event_name }}</p>
+          <p><strong>Lokasi:</strong> {{ $invoice->event->venue->name ?? $invoice->event->location }}</p>
+          <p><strong>Tanggal:</strong> {{ $invoice->event->date }}</p>
           <p><strong>Status:</strong> <span class="font-bold {{ $invoice->status == 'Paid' ? 'text-green-600' : 'text-yellow-600' }}">{{ $invoice->status }}</span></p>
           <p><strong>Jatuh Tempo:</strong> {{ $invoice->due_date }}</p>
         </div>
@@ -109,7 +117,7 @@
             Tipe: {{ $invoice->voucher->type == 'fixed' ? 'Potongan Tetap' : 'Persentase' }} ({{ $invoice->voucher->value }}{{ $invoice->voucher->type == 'percentage' ? '%' : '' }})
           </p>
           @endif
-          
+
           {{-- Tombol Batalkan Voucher --}}
           <div class="mt-4">
             <button

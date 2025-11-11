@@ -21,8 +21,16 @@ class Event extends Model
         'start_time',
         'end_time',
         'status',
+        'client_name',
+        'client_phone',
+        'client_email',
+        'client_address',
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

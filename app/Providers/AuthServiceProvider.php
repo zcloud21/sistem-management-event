@@ -39,5 +39,10 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
         });
+        
+        // Define gate for accessing settings - checks permission rather than role directly
+        Gate::define('access-settings', function ($user) {
+            return $user->can('access-settings');
+        });
     }
 }

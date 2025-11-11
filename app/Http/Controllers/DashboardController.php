@@ -25,34 +25,66 @@ class DashboardController extends Controller
         $recentEvents = $myEvents->sortByDesc('created_at')->take(5);
 
         // --- Revenue Calculation ---
-        $revenueQuery = Payment::query()
-            ->whereHas('invoice.event', function ($query) use ($eventOwnerId) {
+        $revenueQuery = Payment::query();
+
+        if ($user->hasRole('Vendor')) {
+            // For vendors, get revenue from events they are assigned to
+            $vendor = $user->vendor; // Assuming a user has one vendor profile
+            if ($vendor) {
+                $revenueQuery->whereHas('invoice.event.vendors', function ($query) use ($vendor) {
+                    $query->where('vendor_id', $vendor->id);
+                });
+            } else {
+                // If the user is a vendor but has no vendor profile, they have no revenue
+                $revenueQuery->whereRaw('1 = 0');
+            }
+        } else {
+            // For Owners and sub-users, get revenue from events owned by the Owner
+            $revenueQuery->whereHas('invoice.event', function ($query) use ($eventOwnerId) {
                 $query->where('user_id', $eventOwnerId);
             });
+        }
 
         // Apply filters
-        if ($request->filled('filter_event_id')) {
-            $revenueQuery->whereHas('invoice', function ($query) use ($request) {
-                $query->where('event_id', $request->filter_event_id);
-            });
-        }
-        if ($request->filled('filter_period')) {
-            $period = $request->filter_period;
-            if ($period == 'daily') {
-                $revenueQuery->whereDate('payment_date', today());
-            } elseif ($period == 'monthly') {
-                $revenueQuery->whereMonth('payment_date', now()->month)->whereYear('payment_date', now()->year);
-            } elseif ($period == 'yearly') {
-                $revenueQuery->whereYear('payment_date', now()->year);
-            }
+        $period = $request->input('filter_period', 'monthly'); // Default to monthly
+        $selectRaw = "SUM(amount) as total_revenue";
+        $groupBy = "";
+        $orderBy = "";
+
+        switch ($period) {
+            case 'daily':
+                $selectRaw .= ", TO_CHAR(payment_date, 'YYYY-MM-DD') as period";
+                $groupBy = "period";
+                $orderBy = "period";
+                break;
+            case 'weekly':
+                $selectRaw .= ", TO_CHAR(payment_date, 'YYYY-WW') as period";
+                $groupBy = "period";
+                $orderBy = "period";
+                break;
+            case 'monthly':
+                $selectRaw .= ", TO_CHAR(payment_date, 'YYYY-MM') as period";
+                $groupBy = "period";
+                $orderBy = "period";
+                break;
+            case 'yearly':
+                $selectRaw .= ", TO_CHAR(payment_date, 'YYYY') as period";
+                $groupBy = "period";
+                $orderBy = "period";
+                break;
         }
 
-        $totalRevenue = $revenueQuery->sum('amount');
-
-        // Get events for the filter dropdown
-        $eventsForFilter = Event::where('user_id', $eventOwnerId)
-            ->orderBy('event_name')
+        $revenueOverTime = $revenueQuery->selectRaw($selectRaw)
+            ->groupBy($groupBy)
+            ->orderBy($orderBy)
             ->get();
+
+        $totalRevenue = $revenueOverTime->sum('total_revenue');
+
+        $revenueData = [
+            'labels' => $revenueOverTime->pluck('period'),
+            'data' => $revenueOverTime->pluck('total_revenue'),
+        ];
 
         return view('user_dashboard', compact(
             'totalEvents',
@@ -60,7 +92,7 @@ class DashboardController extends Controller
             'totalGuests',
             'recentEvents',
             'totalRevenue',
-            'eventsForFilter'
+            'revenueData'
         ));
     }
 }

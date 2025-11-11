@@ -50,8 +50,6 @@ class InvoiceController extends Controller
         $sanitizedInvoiceNumber = preg_replace('/[\/\\\?\*$$  $$\:<>|]/', '_', $invoice->invoice_number);
         $filename = 'invoice-' . $invoice->id . '-' . $sanitizedInvoiceNumber . '-' . now()->format('Y-m-d') . '.' . $format;
 
-        Log::info("Exporting invoice {$invoice->id} to format {$format}");
-
         try {
             return match ($format) {
                 'pdf' => \Maatwebsite\Excel\Facades\Excel::download(new InvoiceExport($invoice), $filename, \Maatwebsite\Excel\Excel::DOMPDF),
@@ -60,8 +58,13 @@ class InvoiceController extends Controller
                 default => back()->with('error', 'Format ekspor tidak didukung.'),
             };
         } catch (\Exception $e) {
-            Log::error("Export failed: " . $e->getMessage());
-            return back()->with('error', 'Gagal ekspor: ' . $e->getMessage());
+            // Log only the error without exposing sensitive details
+            \Log::error('Invoice export failed', [
+                'invoice_id' => $invoice->id,
+                'format' => $format,
+                'error' => \get_class($e)
+            ]);
+            return back()->with('error', 'Gagal ekspor: proses gagal.');
         }
     }
 
@@ -191,9 +194,24 @@ class InvoiceController extends Controller
             return redirect()->route('invoice.show', $invoice->id)->with('success', 'Voucher berhasil dibatalkan dari faktur dan pelanggan telah diberitahu.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error invalidating voucher for invoice ' . $invoice->id . ': ' . $e->getMessage());
+            \Log::error('Error invalidating voucher for invoice', [
+                'invoice_id' => $invoice->id,
+                'error' => \get_class($e)
+            ]);
             return redirect()->route('invoice.show', $invoice->id)
                 ->with('error', 'Gagal membatalkan voucher. Silakan coba lagi.');
         }
+    }
+
+    /**
+     * Preview invoice for printing
+     */
+    public function preview(Invoice $invoice)
+    {
+        $this->authorize('view', $invoice);
+
+        $invoice->refresh();
+
+        return view('invoices.preview', compact('invoice'));
     }
 }

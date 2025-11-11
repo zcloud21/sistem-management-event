@@ -60,6 +60,10 @@ Route::middleware('auth')->group(function () {
     Route::get('invoices/{invoice}/export/{format}', [InvoiceController::class, 'export'])
         ->name('invoices.export');
 
+    // Route for previewing invoices
+    Route::get('invoices/{invoice}/preview', [InvoiceController::class, 'preview'])
+        ->name('invoices.preview');
+
     // 3. Route untuk menyimpan catatan pembayaran baru
     Route::post('invoices/{invoice}/payments', [PaymentController::class, 'store'])
         ->name('payments.store');
@@ -110,6 +114,22 @@ Route::middleware(['auth'])->group(function () {
 
         // Invoice management
         Route::get('/invoices', [App\Http\Controllers\SuperUser\InvoiceController::class, 'index'])->name('invoices.index');
+        
+    });
+    
+    // Company Settings - accessible to both SuperUser and Owner roles
+    Route::middleware(['auth', 'can:access-settings'])->prefix('superuser')->name('superuser.')->group(function () {
+        Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');
+    });
+    
+    // API routes for location dropdowns using Indonesian address API
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/api/provinces', [App\Http\Controllers\ApiAddressController::class, 'getProvinces']);
+        Route::get('/api/cities/{provinceId}', [App\Http\Controllers\ApiAddressController::class, 'getCitiesByProvince']);
+        Route::get('/api/districts/{cityId}', [App\Http\Controllers\ApiAddressController::class, 'getDistrictsByCity']);
+        Route::get('/api/villages/{districtId}', [App\Http\Controllers\ApiAddressController::class, 'getVillagesByDistrict']);
+        Route::get('/api/search', [App\Http\Controllers\ApiAddressController::class, 'searchLocation']);
     });
 });
 

@@ -27,9 +27,6 @@ class GuestsImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        // Debugging (hapus setelah berhasil)
-        Log::info('Row data:', $row);
-
         return new Guest([
             'event_id' => $this->eventId,
             'name' => $row['nama'] ?? null,

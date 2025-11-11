@@ -32,8 +32,25 @@
           </div>
           <div class="p-6 text-gray-900 dark:text-gray-100">
             <h3 class="text-lg font-bold">Info Event</h3>
-            <p>Venue: {{ $event->venue->name ?? 'N/A' }}</p>
-            <p>Kapan: {{ $event->start_time }}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <p><strong>Nama Event:</strong> {{ $event->event_name }}</p>
+                <p><strong>Venue:</strong> {{ $event->venue->name ?? 'N/A' }}</p>
+                <p><strong>Waktu Mulai:</strong> {{ $event->start_time }}</p>
+                <p><strong>Waktu Selesai:</strong> {{ $event->end_time }}</p>
+              </div>
+              <div>
+                @if($event->client_name)
+                  <p><strong>Nama Klien:</strong> {{ $event->client_name }}</p>
+                  @if($event->client_phone)<p><strong>Telepon:</strong> {{ $event->client_phone }}</p>@endif
+                  @if($event->client_email)<p><strong>Email:</strong> {{ $event->client_email }}</p>@endif
+                  @if($event->client_address)<p><strong>Alamat:</strong> {{ $event->client_address }}</p>@endif
+                @else
+                  <p><strong>Nama Klien:</strong> Tidak ada informasi klien</p>
+                @endif
+              </div>
+            </div>
+            <p><strong>Deskripsi:</strong> {{ $event->description ?? '-' }}</p>
           </div>
         </div>
 

@@ -58,6 +58,32 @@
               <textarea id="description" name="description" rows="4" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('description') }}</textarea>
             </div>
 
+            {{-- CLIENT INFORMATION SECTION --}}
+            <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">Informasi Klien</h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <x-input-label for="client_name" :value="__('Nama Klien')" />
+                  <x-text-input id="client_name" class="block mt-1 w-full border-blue-300 dark:border-blue-900 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="text" name="client_name" :value="old('client_name')" placeholder="Masukkan nama klien" />
+                </div>
+                <div>
+                  <x-input-label for="client_phone" :value="__('Nomor Telepon')" />
+                  <x-text-input id="client_phone" class="block mt-1 w-full border-blue-300 dark:border-blue-900 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="text" name="client_phone" :value="old('client_phone')" placeholder="Contoh: +6281234567890" />
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <x-input-label for="client_email" :value="__('Email')" />
+                <x-text-input id="client_email" class="block mt-1 w-full border-blue-300 dark:border-blue-900 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="email" name="client_email" :value="old('client_email')" placeholder="email@klien.com" />
+              </div>
+              
+              <div class="mb-4">
+                <x-input-label for="client_address" :value="__('Alamat')" />
+                <textarea id="client_address" name="client_address" rows="3" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" placeholder="Alamat lengkap klien">{{ old('client_address') }}</textarea>
+              </div>
+            </div>
+
             <x-primary-button type="submit">
               Simpan Event
             </x-primary-button>

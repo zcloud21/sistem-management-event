@@ -45,6 +45,10 @@ class EventController extends Controller
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'description' => 'nullable|string',
+            'client_name' => 'nullable|string|max:255',
+            'client_phone' => 'nullable|string|max:20',
+            'client_email' => 'nullable|email|max:255',
+            'client_address' => 'nullable|string',
         ]);
 
         $request->user()->events()->create($validated);
@@ -90,6 +94,10 @@ class EventController extends Controller
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'description' => 'nullable|string',
+            'client_name' => 'nullable|string|max:255',
+            'client_phone' => 'nullable|string|max:20',
+            'client_email' => 'nullable|email|max:255',
+            'client_address' => 'nullable|string',
         ]);
 
         $event->update($validated);
