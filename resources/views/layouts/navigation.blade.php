@@ -61,18 +61,40 @@
                     <span class="text-sm font-medium" x-show="open" x-transition>Dashboard</span>
                 </a>
 
-                <!-- My Team (for Owners) -->
+                <!-- Manage Team/Vendor Dropdown (for Owners) -->
                 @hasrole('Owner')
-                <a href="{{ route('team.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('team.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
-                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('team.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    <span class="text-sm font-medium" x-show="open" x-transition>My Team</span>
-                </a>
+                <div x-data="{ open: {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') || request()->routeIs('vendors.*') ? 'true' : 'false' }} }" class="relative">
+                    <button @click="open = !open"
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] w-full text-left {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') || request()->routeIs('vendors.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                        <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') || request()->routeIs('vendors.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Manage Team/Vendor</span>
+                        <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-auto transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" x-show="open" x-transition>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="transform opacity-100 scale-100"
+                        x-transition:leave-end="transform opacity-0 scale-95"
+                        class="mt-2 space-y-2 pl-4">
+                        <a href="{{ route('team-vendor.index', ['view' => 'team']) }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('team-vendor.index') && request('view') == 'team' ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                            <span class="text-sm font-medium" x-show="open" x-transition>Team Members</span>
+                        </a>
+                        <a href="{{ route('team-vendor.index', ['view' => 'vendor']) }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('team-vendor.index') && request('view') == 'vendor' ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                            <span class="text-sm font-medium" x-show="open" x-transition>Vendors</span>
+                        </a>
+                    </div>
+                </div>
                 @endhasrole
 
                 <!-- Venue -->

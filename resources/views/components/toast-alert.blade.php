@@ -1,4 +1,4 @@
-@props(['message', 'type' => 'info', 'timeout' => 5000])
+@props(['message' => '', 'type' => 'info', 'timeout' => 5000])
 
 @php
     $typeClasses = match($type) {
@@ -21,8 +21,10 @@
 <div 
     x-data="{ show: false, message: '{{ $message }}' }"
     x-init="
+        @if(!empty($message))
         setTimeout(() => { show = true; }, 100);
         setTimeout(() => { show = false; }, {{ $timeout }});
+        @endif
         document.addEventListener('show-toast', (e) => {
             message = e.detail.message || '{{ $message }}';
             type = e.detail.type || '{{ $type }}';

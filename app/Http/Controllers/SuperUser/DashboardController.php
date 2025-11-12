@@ -41,6 +41,5 @@ class DashboardController extends Controller
             // Return a simple error page for debugging
             return response()->view('errors.500', [], 500);
         }
-        }
     }
 }

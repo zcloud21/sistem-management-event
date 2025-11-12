@@ -11,6 +11,7 @@ use App\Http\Controllers\VenueController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TeamVendorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,8 +26,19 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Forced Password Change
+    Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'create'])->name('password.change');
+    Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'store'])->name('password.change.update');
+
     // Team Management
     Route::resource('team', TeamController::class)->only(['index', 'create', 'store', 'destroy'])->parameters(['team' => 'member']);
+    Route::get('team/{member}/edit', [TeamController::class, 'edit'])->name('team.edit');
+    Route::put('team/{member}', [TeamController::class, 'update'])->name('team.update');
+    Route::get('team/vendors/create', [TeamController::class, 'createVendor'])->name('team.vendors.create');
+    Route::post('team/vendors', [TeamController::class, 'storeVendor'])->name('team.vendors.store');
+    
+    // Combined Team and Vendor Management
+    Route::get('/manage-team-vendor', [TeamVendorController::class, 'index'])->name('team-vendor.index');
 
     // User-facing Invoice History
     Route::get('/my-invoices', [InvoiceController::class, 'index'])->name('invoices.index');
@@ -35,12 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('events', EventController::class)->except(['show']);
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
     Route::get('events/{event}/guests/import', [GuestController::class, 'showImportForm'])->name('events.guests.import.form');
-    Route::get('/events/{event}/guests/{guest}/edit', [GuestController::class, 'edit'])
-        ->name('events.guests.edit');
-    Route::patch('/events/{event}/guests/{guest}', [GuestController::class, 'update'])
-        ->name('events.guests.update');
-    Route::post('events/{event}/guests/import', [GuestController::class, 'import'])->name('events.guests.import');
     Route::resource('events.guests', GuestController::class)->except(['index']);
+    Route::post('events/{event}/guests/import', [GuestController::class, 'import'])->name('events.guests.import');
     Route::post('events/{event}/assign-vendor', [EventController::class, 'assignVendor'])->name('events.assignVendor');
     Route::delete('/events/{event}/vendors/{vendor}', [EventController::class, 'detachVendor'])
         ->name('events.detachVendor');

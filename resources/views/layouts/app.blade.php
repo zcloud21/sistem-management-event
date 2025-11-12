@@ -48,6 +48,7 @@
         </main>
     </div>
     <x-alert-modal /> {{-- Our confirmation modal --}}
+    <x-toast-alert type="success" />
     @stack('scripts')
 </body>
 

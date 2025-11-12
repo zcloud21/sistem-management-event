@@ -5,21 +5,21 @@
     <div class="px-4 py-6 sm:px-0">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-900">Role Management</h1>
-            <a href="{{ route('superuser.roles.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-200">
+            <x-primary-button href="{{ route('superuser.roles.create') }}" class="">
                 Add New Role
-            </a>
+            </x-primary-button>
         </div>
 
         @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                {{ session('success') }}
-            </div>
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            {{ session('success') }}
+        </div>
         @endif
 
         @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                {{ session('error') }}
-            </div>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            {{ session('error') }}
+        </div>
         @endif
 
         <div class="bg-white shadow rounded-lg overflow-hidden">
@@ -35,79 +35,75 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($roles as $role)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $role->name }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">
-                                        @if($role->permissions->count() > 0)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                {{ $role->permissions->count() }} permissions
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                No permissions
-                                            </span>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $role->users->count() }} users
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    {{-- Edit button with modal confirmation --}}
-                                    <button
-                                      @click="document.dispatchEvent(new CustomEvent('show-alert-edit-role-{{ $role->id }}'))"
-                                      class="text-indigo-600 hover:text-indigo-900 mr-3"
-                                    >
-                                      Edit
-                                    </button>
-
-                                    {{-- Modal Konfirmasi Edit --}}
-                                    <x-alert-modal
-                                        id="edit-role-{{ $role->id }}"
-                                        title="Edit Role"
-                                        message="Apakah anda yakin ingin mengedit role {{ $role->name }}?"
-                                        type="warning"
-                                        action="window.location='{{ route('superuser.roles.edit', $role) }}'"
-                                        cancel=""
-                                    />
-                                    @if($role->name !== 'SuperUser' && $role->users->count() === 0)
-                                        {{-- Tombol Hapus dengan konfirmasi modal --}}
-                                        <button 
-                                          @click="document.dispatchEvent(new CustomEvent('show-alert-delete-role-{{ $role->id }}'))"
-                                          class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block"
-                                        >
-                                          Delete
-                                        </button>
-
-                                        {{-- Modal Konfirmasi Hapus --}}
-                                        <x-alert-modal 
-                                            id="delete-role-{{ $role->id }}" 
-                                            title="Delete Role" 
-                                            message="Are you sure you want to delete role {{ $role->name }}? This action cannot be undone." 
-                                            type="danger"
-                                            action="document.getElementById('delete-form-role-{{ $role->id }}').submit()"
-                                            cancel=""
-                                        />
-
-                                        {{-- Form tersembunyi untuk aksi hapus --}}
-                                        <form id="delete-form-role-{{ $role->id }}" action="{{ route('superuser.roles.destroy', $role) }}" method="POST" class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    @elseif($role->name === 'SuperUser')
-                                        <span class="text-gray-400">Cannot delete</span>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $role->name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">
+                                    @if($role->permissions->count() > 0)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        {{ $role->permissions->count() }} permissions
+                                    </span>
                                     @else
-                                        <span class="text-gray-400">In use</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        No permissions
+                                    </span>
                                     @endif
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $role->users->count() }} users
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                {{-- Edit button with modal confirmation --}}
+                                <button
+                                    @click="document.dispatchEvent(new CustomEvent('show-alert-edit-role-{{ $role->id }}'))"
+                                    class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                    Edit
+                                </button>
+
+                                {{-- Modal Konfirmasi Edit --}}
+                                <x-alert-modal
+                                    id="edit-role-{{ $role->id }}"
+                                    title="Edit Role"
+                                    message="Apakah anda yakin ingin mengedit role {{ $role->name }}?"
+                                    type="warning"
+                                    action="window.location='{{ route('superuser.roles.edit', $role) }}'"
+                                    cancel="" />
+                                @if($role->name !== 'SuperUser' && $role->users->count() === 0)
+                                {{-- Tombol Hapus dengan konfirmasi modal --}}
+                                <button
+                                    @click="document.dispatchEvent(new CustomEvent('show-alert-delete-role-{{ $role->id }}'))"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-block">
+                                    Delete
+                                </button>
+
+                                {{-- Modal Konfirmasi Hapus --}}
+                                <x-alert-modal
+                                    id="delete-role-{{ $role->id }}"
+                                    title="Delete Role"
+                                    message="Are you sure you want to delete role {{ $role->name }}? This action cannot be undone."
+                                    type="danger"
+                                    action="document.getElementById('delete-form-role-{{ $role->id }}').submit()"
+                                    cancel="" />
+
+                                {{-- Form tersembunyi untuk aksi hapus --}}
+                                <form id="delete-form-role-{{ $role->id }}" action="{{ route('superuser.roles.destroy', $role) }}" method="POST" class="hidden">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                                @elseif($role->name === 'SuperUser')
+                                <span class="text-gray-400">Cannot delete</span>
+                                @else
+                                <span class="text-gray-400">In use</span>
+                                @endif
+                            </td>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No roles found</td>
-                            </tr>
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No roles found</td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
