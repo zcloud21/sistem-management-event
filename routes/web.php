@@ -12,11 +12,11 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeamVendorController;
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\TemanHalalController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [TemanHalalController::class, 'index'])->name('temanhalal');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
