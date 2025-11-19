@@ -14,9 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeamVendorController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\LandingPageController::class, 'index'])->name('landing.page');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
