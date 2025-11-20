@@ -43,6 +43,11 @@ class ServiceTypeSeeder extends Seeder
             ['name' => 'Wedding Shoes'],
         ];
 
-        DB::table('service_types')->insert($serviceTypes);
+        foreach ($serviceTypes as $serviceType) {
+            DB::table('service_types')->updateOrInsert(
+                ['name' => $serviceType['name']], // kondisi untuk mencari
+                ['name' => $serviceType['name']]  // nilai yang akan di-insert atau di-update
+            );
+        }
     }
 }

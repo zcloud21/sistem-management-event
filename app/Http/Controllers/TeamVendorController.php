@@ -13,7 +13,7 @@ class TeamVendorController extends Controller
     {
         $view = $request->query('view', 'team'); // Default to 'team'
         $layout = $request->query('layout', 'grid'); // Default to 'grid'
-        
+
         // Determine the master owner ID for the team/company
         $teamOwnerId = auth()->user()->owner_id ?? auth()->id();
 
@@ -35,17 +35,17 @@ class TeamVendorController extends Controller
             // Apply search filter
             if ($request->has('search') && !empty($request->search)) {
                 $searchTerm = $request->search;
-                $query->where(function($q) use ($searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
                     $q->where('name', 'like', "%{$searchTerm}%")
-                      ->orWhere('email', 'like', "%{$searchTerm}%")
-                      ->orWhere('username', 'like', "%{$searchTerm}%");
+                        ->orWhere('email', 'like', "%{$searchTerm}%")
+                        ->orWhere('username', 'like', "%{$searchTerm}%");
                 });
             }
 
             // Apply role filter
             if ($request->has('role') && !empty($request->role)) {
                 $roleId = $request->role;
-                $query->whereHas('roles', function($q) use ($roleId) {
+                $query->whereHas('roles', function ($q) use ($roleId) {
                     $q->where('role_id', $roleId);
                 });
             }
@@ -59,24 +59,30 @@ class TeamVendorController extends Controller
                 ->flatMap->roles
                 ->unique('id')
                 ->values();
+            $teamMembers = User::where('owner_id', auth()->id())
+                ->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', 'Vendor');
+                })
+                ->with('roles')
+                ->paginate(10);
         } elseif ($view === 'vendor') {
-            $query = Vendor::whereHas('user', function($q) use ($teamOwnerId) {
+            $query = Vendor::whereHas('user', function ($q) use ($teamOwnerId) {
                 $q->where('owner_id', $teamOwnerId);
             })->with('user', 'serviceType');
 
             // Apply search filter
             if ($request->has('search') && !empty($request->search)) {
                 $searchTerm = $request->search;
-                $query->where(function($q) use ($searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
                     $q->where('category', 'like', "%{$searchTerm}%")
-                      ->orWhere('contact_person', 'like', "%{$searchTerm}%")
-                      ->orWhere('phone_number', 'like', "%{$searchTerm}%")
-                      ->orWhereHas('user', function($uq) use ($searchTerm) {
-                          $uq->where('name', 'like', "%{$searchTerm}%");
-                      })
-                      ->orWhereHas('serviceType', function($stq) use ($searchTerm) {
-                          $stq->where('name', 'like', "%{$searchTerm}%");
-                      });
+                        ->orWhere('contact_person', 'like', "%{$searchTerm}%")
+                        ->orWhere('phone_number', 'like', "%{$searchTerm}%")
+                        ->orWhereHas('user', function ($uq) use ($searchTerm) {
+                            $uq->where('name', 'like', "%{$searchTerm}%");
+                        })
+                        ->orWhereHas('serviceType', function ($stq) use ($searchTerm) {
+                            $stq->where('name', 'like', "%{$searchTerm}%");
+                        });
                 });
             }
 
@@ -95,7 +101,7 @@ class TeamVendorController extends Controller
             $vendors = $query->paginate(10)->appends($request->query());
 
             // Get all distinct categories for the category filter
-            $allCategories = Vendor::whereHas('user', function($q) use ($teamOwnerId) {
+            $allCategories = Vendor::whereHas('user', function ($q) use ($teamOwnerId) {
                 $q->where('owner_id', $teamOwnerId);
             })->distinct()->pluck('category');
 

@@ -16,7 +16,8 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\TemanHalalController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [TemanHalalController::class, 'index'])->name('temanhalal');
+
+Route::get('/', [App\Http\Controllers\LandingPageController::class, 'index'])->name('landing.page');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('team/vendors', [TeamController::class, 'storeVendor'])->name('team.vendors.store');
     Route::post('vendor/{user}/approve', [TeamController::class, 'approveVendor'])->name('vendor.approve')->middleware('can:vendor.approve');
     Route::delete('vendor/{user}/reject', [TeamController::class, 'rejectVendor'])->name('vendor.reject')->middleware('can:vendor.approve');
-    
+
     // Combined Team and Vendor Management
     Route::get('/manage-team-vendor', [TeamVendorController::class, 'index'])->name('team-vendor.index');
 
@@ -132,15 +133,14 @@ Route::middleware(['auth'])->group(function () {
 
         // Invoice management
         Route::get('/invoices', [App\Http\Controllers\SuperUser\InvoiceController::class, 'index'])->name('invoices.index');
-        
     });
-    
+
     // Company Settings - accessible to both SuperUser and Owner roles
     Route::middleware(['auth', 'can:access-settings'])->prefix('superuser')->name('superuser.')->group(function () {
         Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');
     });
-    
+
     // API routes for location dropdowns using Indonesian address API
     Route::middleware(['auth'])->group(function () {
         Route::get('/api/provinces', [App\Http\Controllers\ApiAddressController::class, 'getProvinces']);

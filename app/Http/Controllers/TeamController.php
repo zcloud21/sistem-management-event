@@ -14,6 +14,20 @@ use Illuminate\Validation\Rules;
 class TeamController extends Controller
 {
     /**
+     * Display a listing of the user's team members.
+     */
+    public function index()
+    {
+        $teamMembers = User::where('owner_id', auth()->id())
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Vendor');
+            })
+            ->with('roles')
+            ->paginate(10);
+        return view('team.index', compact('teamMembers'));
+    }
+
+    /**
      * Show the form for creating a new team member.
      */
     public function create()
@@ -102,7 +116,7 @@ class TeamController extends Controller
         // Generate temporary password from username + current year
         $currentYear = date('Y');
         $temporaryPassword = $request->username . $currentYear;
-        
+
         $creator = auth()->user();
         $canCreateWithoutApproval = $creator->can('vendor.auto_approve_on_create');
 
@@ -131,7 +145,7 @@ class TeamController extends Controller
 
         // Get the service type name to use as category
         $serviceType = ServiceType::findOrFail($request->service_type_id);
-        
+
         Vendor::create([
             'user_id' => $vendorUser->id,
             'service_type_id' => $request->service_type_id,
@@ -153,7 +167,7 @@ class TeamController extends Controller
         if ($member->owner_id !== auth()->id()) {
             abort(403, 'UNAUTHORIZED_ACTION');
         }
-        
+
         $roles = \Spatie\Permission\Models\Role::whereIn('name', ['Admin', 'Staff'])->get();
         return view('team.edit', compact('member', 'roles'));
     }
@@ -167,7 +181,7 @@ class TeamController extends Controller
         if ($member->owner_id !== auth()->id()) {
             abort(403, 'UNAUTHORIZED_ACTION');
         }
-        
+
         $request->merge([
             'username' => strtolower($request->username),
             'email' => strtolower($request->email),
@@ -175,10 +189,20 @@ class TeamController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'alpha_dash', 
-                Rule::unique('users', 'username')->ignore($member->id)],
-            'email' => ['required', 'string', 'email', 'max:255', 
-                Rule::unique('users', 'email')->ignore($member->id)],
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'alpha_dash',
+                Rule::unique('users', 'username')->ignore($member->id)
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($member->id)
+            ],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'exists:roles,name'],
         ]);
@@ -275,4 +299,3 @@ class TeamController extends Controller
         return redirect()->route('team-vendor.index', ['view' => 'vendor'])->with('success', "Pending vendor '{$vendorName}' has been rejected and removed.");
     }
 }
-

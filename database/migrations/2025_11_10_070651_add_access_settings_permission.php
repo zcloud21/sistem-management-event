@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Permission;
 
 return new class extends Migration
 {
@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Create the access-settings permission
-        \Spatie\Permission\Models\Permission::create(['name' => 'access-settings', 'guard_name' => 'web']);
+        // Check if the permission already exists before creating
+        if (!Permission::where('name', 'access-settings')->where('guard_name', 'web')->exists()) {
+            // Create the access-settings permission
+            Permission::create(['name' => 'access-settings', 'guard_name' => 'web']);
+        }
     }
 
     /**
@@ -21,6 +24,6 @@ return new class extends Migration
     public function down(): void
     {
         // Delete the access-settings permission
-        \Spatie\Permission\Models\Permission::where('name', 'access-settings')->delete();
+        Permission::where('name', 'access-settings')->delete();
     }
 };
