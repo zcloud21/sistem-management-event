@@ -29,8 +29,7 @@
 
     <!-- Main content area that shifts based on sidebar -->
     <div id="main-content"
-        :class="{ 'lg:ml-64': sidebarExpanded, 'lg:ml-20': !sidebarExpanded }"
-        class="transition-all duration-300 ease-in-out">
+        :class="{ 'lg:ml-64': sidebarExpanded, 'lg:ml-20': !sidebarExpanded }">
 
         <!-- Page Heading -->
         @isset($header)
@@ -49,6 +48,7 @@
     </div>
     <x-alert-modal /> {{-- Our confirmation modal --}}
     <x-toast-alert type="success" />
+    <x-loading />
     @stack('scripts')
 </body>
 

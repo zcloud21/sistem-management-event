@@ -113,5 +113,6 @@
             </div>
         </div>
     </footer>
+    <x-loading />
 </body>
 </html>

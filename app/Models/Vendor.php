@@ -19,6 +19,22 @@ class Vendor extends Model
         'contact_person',
         'phone_number',
         'address',
+        'brand_name',
+        'logo_path',
+        'description',
+        'email',
+        'whatsapp',
+        'location',
+        'instagram',
+        'tiktok',
+        'facebook',
+        'operating_hours',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'operating_hours' => 'array',
+        'is_active' => 'boolean',
     ];
 
     // Relasi Many-to-Many: Vendor ini bisa bekerja di banyak event

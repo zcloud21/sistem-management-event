@@ -28,7 +28,7 @@
         'translate-x-0': open && window.innerWidth < 1024,
         'block': open || window.innerWidth >= 1024
     }"
-    class="fixed top-0 left-0 h-full bg-[#FFFFFF] text-[#1A1A1A] z-50 transition-all duration-300 ease-in-out lg:block">
+    class="fixed top-0 left-0 h-full bg-[#FFFFFF] text-[#1A1A1A] z-50 lg:block">
 
     <div class="flex flex-col h-full">
         <!-- Logo Section -->
@@ -164,6 +164,18 @@
                     <span class="text-sm font-medium" x-show="open" x-transition>Event</span>
                 </a>
                 @endcan
+                @endhasrole
+
+                <!-- Business Profile (for Vendors) -->
+                @hasrole('Vendor')
+                <a href="{{ route('vendor.business-profile.edit') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.business-profile.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendor.business-profile.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span class="text-sm font-medium" x-show="open" x-transition>Business Profile</span>
+                </a>
                 @endhasrole
 
                 <!-- My Invoices -->

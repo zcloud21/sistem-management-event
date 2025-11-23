@@ -132,5 +132,6 @@
         });
     </script>
 
+    <x-loading />
 </body>
 </html>

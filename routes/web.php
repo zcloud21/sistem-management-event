@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\LandingPageController::class, 'index'])->name('landing.page');
 
+// Public Vendor Profile
+Route::get('/vendor/{id}/profile', [\App\Http\Controllers\VendorBusinessProfileController::class, 'show'])
+    ->name('vendor.profile.show');
+
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
@@ -143,6 +148,19 @@ Route::middleware('auth')->group(function () {
 
         // Vendor Services Routes
         Route::resource('services', \App\Http\Controllers\VendorServiceController::class);
+
+        // Business Profile Routes
+        Route::get('/business-profile', [\App\Http\Controllers\VendorBusinessProfileController::class, 'edit'])
+            ->name('business-profile.edit')
+            ->middleware('role:Vendor');
+        Route::put('/business-profile', [\App\Http\Controllers\VendorBusinessProfileController::class, 'update'])
+            ->name('business-profile.update')
+            ->middleware('role:Vendor');
+        
+        // Debug route (temporary - remove in production)
+        Route::get('/business-profile/debug', function() {
+            return view('vendor.business-profile.debug');
+        })->name('business-profile.debug')->middleware('role:Vendor');
     });
 });
 

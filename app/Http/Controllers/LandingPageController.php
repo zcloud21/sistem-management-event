@@ -30,11 +30,15 @@ class LandingPageController extends Controller
         // Get main vendors for the main vendor section (first 8 vendors)
         $vendors = Vendor::with(['user', 'serviceType'])
                         ->whereNotNull('user_id')
+                        ->where('is_active', true) // Only show active vendors
                         ->whereHas('user', function($query) {
                             $query->whereHas('roles', function($roleQuery) {
                                 $roleQuery->where('name', 'Vendor');
                             });
                         })
+                        // Prioritize vendors with complete business profiles
+                        ->orderByRaw('CASE WHEN brand_name IS NOT NULL AND logo_path IS NOT NULL THEN 0 ELSE 1 END')
+                        ->orderBy('created_at', 'desc')
                         ->limit(8)
                         ->get()
                         ->map(function ($vendor) {
@@ -43,7 +47,7 @@ class LandingPageController extends Controller
                             $vendor->total_reviews = rand(10, 100); // Placeholder number of reviews
 
                             // Ensure contact information is available
-                            $vendor->display_name = $vendor->user ? $vendor->user->name : $vendor->contact_person;
+                            $vendor->display_name = $vendor->brand_name ?? ($vendor->user ? $vendor->user->name : $vendor->contact_person);
                             $vendor->display_category = $vendor->serviceType ? $vendor->serviceType->name : $vendor->category;
 
                             return $vendor;
@@ -52,11 +56,14 @@ class LandingPageController extends Controller
         // Get additional vendors for the second vendor section (remaining vendors)
         $additionalVendors = Vendor::with(['user', 'serviceType'])
                         ->whereNotNull('user_id')
+                        ->where('is_active', true) // Only show active vendors
                         ->whereHas('user', function($query) {
                             $query->whereHas('roles', function($roleQuery) {
                                 $roleQuery->where('name', 'Vendor');
                             });
                         })
+                        ->orderByRaw('CASE WHEN brand_name IS NOT NULL AND logo_path IS NOT NULL THEN 0 ELSE 1 END')
+                        ->orderBy('created_at', 'desc')
                         ->offset(8) // Skip the first 8 vendors to show different ones
                         ->limit(6)
                         ->get()
@@ -66,7 +73,7 @@ class LandingPageController extends Controller
                             $vendor->total_reviews = rand(10, 100); // Placeholder number of reviews
 
                             // Ensure contact information is available
-                            $vendor->display_name = $vendor->user ? $vendor->user->name : $vendor->contact_person;
+                            $vendor->display_name = $vendor->brand_name ?? ($vendor->user ? $vendor->user->name : $vendor->contact_person);
                             $vendor->display_category = $vendor->serviceType ? $vendor->serviceType->name : $vendor->category;
 
                             return $vendor;
