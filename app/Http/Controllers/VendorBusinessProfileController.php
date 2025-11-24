@@ -128,6 +128,7 @@ class VendorBusinessProfileController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active') ? true : false;
+        $validated['show_stock_on_profile'] = $request->has('show_stock_on_profile') ? true : false;
 
         $vendor->update($validated);
 
@@ -140,7 +141,16 @@ class VendorBusinessProfileController extends Controller
      */
     public function show($id)
     {
-        $vendor = Vendor::with(['user', 'serviceType'])->findOrFail($id);
+        $vendor = Vendor::with([
+            'user', 
+            'serviceType', 
+            'publishedPortfolios.images', 
+            'products', 
+            'packages.services',
+            'catalogCategories.items.images',
+            'catalogItems.category',
+            'catalogItems.images'
+        ])->findOrFail($id);
 
         if (!$vendor->is_active) {
             abort(404);

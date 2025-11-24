@@ -29,7 +29,7 @@
 
     <!-- Main content area that shifts based on sidebar -->
     <div id="main-content"
-        :class="{ 'lg:ml-64': sidebarExpanded, 'lg:ml-20': !sidebarExpanded }">
+        :class="{ 'lg:ml-32': sidebarExpanded, 'lg:ml-10': !sidebarExpanded }">
 
         <!-- Page Heading -->
         @isset($header)

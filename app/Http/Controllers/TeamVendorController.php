@@ -67,7 +67,8 @@ class TeamVendorController extends Controller
                 ->paginate(10);
         } elseif ($view === 'vendor') {
             $query = Vendor::whereHas('user', function ($q) use ($teamOwnerId) {
-                $q->where('owner_id', $teamOwnerId);
+                $q->where('owner_id', $teamOwnerId)
+                  ->orWhereNull('owner_id');
             })->with('user', 'serviceType');
 
             // Apply search filter
@@ -102,7 +103,8 @@ class TeamVendorController extends Controller
 
             // Get all distinct categories for the category filter
             $allCategories = Vendor::whereHas('user', function ($q) use ($teamOwnerId) {
-                $q->where('owner_id', $teamOwnerId);
+                $q->where('owner_id', $teamOwnerId)
+                  ->orWhereNull('owner_id');
             })->distinct()->pluck('category');
 
             // Get all service types for the service type filter

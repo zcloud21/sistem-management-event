@@ -63,10 +63,10 @@
 
                 <!-- Manage Team/Vendor Dropdown (for Owners) -->
                 @if(auth()->user()->hasRole('Owner')|| auth()->user()->hasRole('SuperUser') || auth()->user()->hasRole('Admin'))
-                <div x-data="{ open: {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') || request()->routeIs('vendors.*') ? 'true' : 'false' }} }" class="relative">
+                <div x-data="{ open: {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"
-                        class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] w-full text-left {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') || request()->routeIs('vendors.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
-                        <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') || request()->routeIs('vendors.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] w-full text-left {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                        <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('team-vendor.*') || request()->routeIs('team.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -95,6 +95,42 @@
                         <a href="{{ route('team-vendor.index', ['view' => 'vendor']) }}"
                             class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('team-vendor.index') && request('view') == 'vendor' ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
                             <span class="text-sm font-medium" x-show="open" x-transition>Vendors</span>
+                        </a>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Portfolio / Galeri (for Admin & Owner) -->
+                @if(auth()->user()->hasRole('Owner') || auth()->user()->hasRole('SuperUser') || auth()->user()->hasRole('Admin'))
+                <a href="{{ route('vendor.portfolios.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.portfolios.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendor.portfolios.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-sm font-medium" x-show="open" x-transition>Portfolio / Galeri</span>
+                </a>
+
+                <!-- Layanan Dropdown (for Admin & Owner) -->
+                <div x-data="{ servicesOpen: {{ request()->routeIs('vendor.products.*') || request()->routeIs('vendor.packages.*') ? 'true' : 'false' }} }" class="relative">
+                    <button @click="servicesOpen = !servicesOpen"
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] w-full text-left {{ request()->routeIs('vendor.products.*') || request()->routeIs('vendor.packages.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                        <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendor.products.*') || request()->routeIs('vendor.packages.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        <span class="text-sm font-medium" x-show="open" x-transition>Layanan (Services)</span>
+                        <svg :class="{'rotate-180': servicesOpen}" class="w-4 h-4 ml-auto transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="open" x-transition>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div x-show="servicesOpen && open" x-transition class="ml-4 mt-1 space-y-1">
+                        <a href="{{ route('vendor.products.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.products.*') && !request()->routeIs('vendor.packages.*') ? 'bg-[#E8F5E9] text-[#27AE60]' : 'text-[#666666]' }}">
+                            <span class="text-sm">Layanan Individual</span>
+                        </a>
+                        <a href="{{ route('vendor.packages.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.packages.*') ? 'bg-[#E8F5E9] text-[#27AE60]' : 'text-[#666666]' }}">
+                            <span class="text-sm">Paket Layanan</span>
                         </a>
                     </div>
                 </div>
@@ -176,6 +212,47 @@
                     </svg>
                     <span class="text-sm font-medium" x-show="open" x-transition>Business Profile</span>
                 </a>
+
+                <a href="{{ route('vendor.portfolios.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.portfolios.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendor.portfolios.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-sm font-medium" x-show="open" x-transition>Portfolio / Galeri</span>
+                </a>
+
+                <!-- Layanan Dropdown for Vendor -->
+                <div x-data="{ servicesOpen: {{ request()->routeIs('vendor.products.*') || request()->routeIs('vendor.packages.*') ? 'true' : 'false' }} }" class="relative">
+                    <button @click="servicesOpen = !servicesOpen"
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] w-full text-left {{ request()->routeIs('vendor.products.*') || request()->routeIs('vendor.packages.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                        <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendor.products.*') || request()->routeIs('vendor.packages.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        <span class="text-sm font-medium" x-show="open" x-transition>Layanan (Services)</span>
+                        <svg :class="{'rotate-180': servicesOpen}" class="w-4 h-4 ml-auto transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="open" x-transition>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div x-show="servicesOpen && open" x-transition class="ml-4 mt-1 space-y-1">
+                        <a href="{{ route('vendor.products.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.products.*') && !request()->routeIs('vendor.packages.*') ? 'bg-[#E8F5E9] text-[#27AE60]' : 'text-[#666666]' }}">
+                            <span class="text-sm">Layanan Individual</span>
+                        </a>
+                        <a href="{{ route('vendor.packages.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.packages.*') ? 'bg-[#E8F5E9] text-[#27AE60]' : 'text-[#666666]' }}">
+                            <span class="text-sm">Paket Layanan</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="{{ route('vendor.catalog.items.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendor.catalog.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
+                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendor.catalog.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span class="text-sm font-medium" x-show="open" x-transition>Katalog / Inventaris</span>
+                </a>
                 @endhasrole
 
                 <!-- My Invoices -->
@@ -192,35 +269,6 @@
                     <span class="text-sm font-medium" x-show="open" x-transition>My Invoices</span>
                 </a>
                 @endunlessrole
-
-                <!-- Vendors -->
-                @hasrole('SuperUser')
-                <a href="{{ route('vendors.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendors.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
-                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendors.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m11 17 2 2a1 1 0 1 0 3-3" />
-                        <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4" />
-                        <path d="m21 3 1 11h-2" />
-                        <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" />
-                        <path d="M3 4h8" />
-                    </svg>
-                    <span class="text-sm font-medium" x-show="open" x-transition>Vendors</span>
-                </a>
-                @else
-                @can('view_vendors')
-                <a href="{{ route('vendors.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200 hover:bg-[#F0F0F0] {{ request()->routeIs('vendors.*') ? 'bg-[#012A4A] text-white' : 'text-[#1A1A1A]' }}">
-                    <svg class="w-6 h-6 flex-shrink-0 p-1 rounded {{ request()->routeIs('vendors.*') ? 'bg-[#c1dfeb] text-[#012A4A]' : 'bg-[#012A4A] text-white' }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m11 17 2 2a1 1 0 1 0 3-3" />
-                        <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4" />
-                        <path d="m21 3 1 11h-2" />
-                        <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" />
-                        <path d="M3 4h8" />
-                    </svg>
-                    <span class="text-sm font-medium" x-show="open" x-transition>Vendors</span>
-                </a>
-                @endcan
-                @endhasrole
 
                 <!-- Voucher -->
                 @hasrole('SuperUser')

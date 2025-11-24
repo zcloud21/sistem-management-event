@@ -87,8 +87,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('events.guests', GuestController::class)->except(['index']);
     Route::post('events/{event}/guests/import', [GuestController::class, 'import'])->name('events.guests.import');
     Route::post('events/{event}/assign-vendor', [EventController::class, 'assignVendor'])->name('events.assignVendor');
-    Route::delete('/events/{event}/vendors/{vendor}', [EventController::class, 'detachVendor'])
-        ->name('events.detachVendor');
+    Route::post('/events/{event}/vendors/{vendor}/detach', [EventController::class, 'detachVendor'])->name('events.detach-vendor');
+    
+    // Event Vendor Items Management
+    Route::get('/events/{event}/vendors/{vendor}/items', [App\Http\Controllers\EventVendorItemController::class, 'index'])->name('events.vendor-items.index');
+    Route::post('/events/{event}/vendors/{vendor}/items', [App\Http\Controllers\EventVendorItemController::class, 'store'])->name('events.vendor-items.store');
+    Route::delete('/event-vendor-items/{item}', [App\Http\Controllers\EventVendorItemController::class, 'destroy'])->name('events.vendor-items.destroy');
+
     Route::resource('vendors', VendorController::class);
 
     // --- INVOICE & PAYMENT ROUTES ---
@@ -161,6 +166,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/business-profile/debug', function() {
             return view('vendor.business-profile.debug');
         })->name('business-profile.debug')->middleware('role:Vendor');
+
+        // Portfolio Routes
+        Route::resource('portfolios', \App\Http\Controllers\VendorPortfolioController::class);
+        Route::delete('/portfolio-images/{id}', [\App\Http\Controllers\VendorPortfolioController::class, 'destroyImage'])
+            ->name('portfolio-images.destroy');
+
+        // Product / Service Routes
+        Route::resource('products', \App\Http\Controllers\VendorProductController::class);
+
+        // Package Routes
+        Route::resource('packages', \App\Http\Controllers\VendorPackageController::class);
+
+        // Catalog Routes (Universal Module)
+        Route::prefix('catalog')->name('catalog.')->group(function () {
+            Route::resource('categories', \App\Http\Controllers\VendorCatalogCategoryController::class);
+            Route::resource('items', \App\Http\Controllers\VendorCatalogItemController::class);
+            Route::delete('/items/images/{id}', [\App\Http\Controllers\VendorCatalogItemController::class, 'destroyImage'])->name('items.images.destroy');
+        });
     });
 });
 

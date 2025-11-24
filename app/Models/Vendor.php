@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\ServiceType;
 
@@ -58,10 +59,43 @@ class Vendor extends Model
     }
 
     // Relasi Many-to-Many: Vendor bisa menyediakan banyak layanan
-    public function services()
+    public function services(): BelongsToMany
     {
-        return $this->belongsToMany(Service::class, 'vendor_services')
-                    ->withPivot('price', 'description', 'is_available')
-                    ->withTimestamps();
+        return $this->belongsToMany(VenueService::class, 'vendor_venue_services', 'vendor_id', 'venue_service_id')
+            ->withPivot('price', 'description');
+    }
+
+    // Relasi One-to-Many: Vendor memiliki banyak portfolio
+    public function portfolios(): HasMany
+    {
+        return $this->hasMany(VendorPortfolio::class);
+    }
+
+    // Get published portfolios only
+    public function publishedPortfolios(): HasMany
+    {
+        return $this->hasMany(VendorPortfolio::class)->where('status', 'published')->ordered();
+    }
+
+    // Relasi One-to-Many: Vendor memiliki banyak produk/layanan
+    public function products(): HasMany
+    {
+        return $this->hasMany(VendorProduct::class);
+    }
+
+    // Catalog Relationships
+    public function catalogCategories(): HasMany
+    {
+        return $this->hasMany(VendorCatalogCategory::class);
+    }
+
+    public function catalogItems(): HasMany
+    {
+        return $this->hasMany(VendorCatalogItem::class);
+    }
+
+    public function packages(): HasMany
+    {
+        return $this->hasMany(VendorPackage::class);
     }
 }

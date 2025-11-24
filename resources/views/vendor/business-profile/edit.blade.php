@@ -330,6 +330,21 @@
                     <p class="mt-2 text-xs text-gray-500">
                         Jika dinonaktifkan, profil Anda tidak akan muncul di halaman vendor website.
                     </p>
+
+                    <div class="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200">
+                        <input type="checkbox" 
+                               name="show_stock_on_profile" 
+                               id="show_stock_on_profile" 
+                               value="1"
+                               {{ old('show_stock_on_profile', $vendor->show_stock_on_profile) ? 'checked' : '' }}
+                               class="rounded border-[#E0E0E0] text-[#27AE60] focus:ring-[#27AE60] h-5 w-5">
+                        <label for="show_stock_on_profile" class="text-sm font-medium text-[#1A1A1A]">
+                            Tampilkan jumlah stok katalog di profil publik
+                        </label>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-500">
+                        Jika diaktifkan, pengunjung dapat melihat jumlah stok produk katalog Anda.
+                    </p>
                 </div>
 
                 <!-- Submit Button -->

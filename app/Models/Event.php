@@ -55,4 +55,9 @@ class Event extends Model
     {
         return $this->hasOne(Invoice::class);
     }
+
+    public function vendorItems(): HasMany
+    {
+        return $this->hasMany(EventVendorItem::class);
+    }
 }
